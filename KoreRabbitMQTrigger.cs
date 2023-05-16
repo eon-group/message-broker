@@ -45,7 +45,7 @@ namespace EON.Function
       KoreCertificateMessage certificateMessage = JsonConvert.DeserializeObject<KoreCertificateMessage>(jsonMessage);
 
       // When we see a success message for a transfer, look up the transfer request and push it along by messaging back to the digital cert app (http post.. KISS for now)
-      if ("Success".Equals(certificateMessage.status))
+      if ("SUCCESS".Equals(certificateMessage.status))
       {
         // Read row from cosmos db with id: certificateMessage.transferHash
         log.LogInformation($"Reading transaction: {certificateMessage.transferHash} from CosmosDB");
