@@ -29,7 +29,20 @@ namespace EON.Function
     {
       log.LogInformation($"C# RabbitMQ queue trigger function processed message: {message}");
 
-      KoreCertificateMessage certificateMessage = JsonConvert.DeserializeObject<KoreCertificateMessage>(message);
+      string jsonMessage;
+      // Try to parse our JSON content of an RMQTextMessage by simple string split
+      if (message.Contains("RMQTextMessage"))
+      {
+        int jsonIndex = message.IndexOf("{");
+        jsonMessage = message.Substring(jsonIndex);
+        log.LogInformation($"Parsing JSON from JMS Message. JsonIndex: {jsonIndex}, JsonMessage: {jsonMessage}");
+      }
+      else
+      {
+        jsonMessage = message;
+      }
+
+      KoreCertificateMessage certificateMessage = JsonConvert.DeserializeObject<KoreCertificateMessage>(jsonMessage);
 
       // When we see a success message for a transfer, look up the transfer request and push it along by messaging back to the digital cert app (http post.. KISS for now)
       if ("Success".Equals(certificateMessage.status))
